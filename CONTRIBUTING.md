@@ -24,8 +24,11 @@ Node 18 or newer is required. `.nvmrc` pins the version used in CI.
 
 ## Guidelines
 
-- **Coverage is 100% and enforced.** Every new branch needs a test. Tests mock `fetch` through
-  the client's `fetch` option; never call a real gateway from the test suite.
+- **Coverage is 100% and enforced.** Every new branch needs a unit test. Unit tests mock `fetch`
+  through the client's `fetch` option and never touch the network.
+- **Add an integration test for every new endpoint** in `test/integration/`. Integration tests
+  run against the sandbox configured in `.env`, must clean up what they create, and must use
+  `skipIfUnavailable` for features that an account may not have enabled.
 - **Mirror the gateway API.** Request and response field names stay snake_case and match the
   gateway reference. Add an endpoint by (1) adding types in `src/types`, (2) adding a method on
   the matching resource in `src/resources`, (3) testing the HTTP method, path, query and body,

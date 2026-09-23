@@ -70,6 +70,46 @@ Assign these TPNs to a sandbox terminal and pass `payment_method.terminal.id`:
 
 Apple Pay and Google Pay are **not** available in the sandbox; test them against production.
 
+## Running the SDK's integration suite against your sandbox
+
+The repository ships an integration suite (`test/integration/`) that exercises every resource
+against a real sandbox. It needs your sandbox credentials:
+
+```bash
+cp .env.example .env
+# edit .env:
+#   GATEWAY_API_KEY=api_...
+#   GATEWAY_BASE_URL=https://sandbox.your-gateway.com
+npm run test:integration
+```
+
+Environment variables take precedence over `.env`. Optional variables unlock more tests:
+
+| Variable                                     | Enables                                            |
+| -------------------------------------------- | -------------------------------------------------- |
+| `GATEWAY_PARTNER_API_KEY`                    | Partner API tests (fraud rule CRUD).               |
+| `GATEWAY_FEE_SCHEDULE_ID`                    | Merchant boarding (creates a merchant and a user). |
+| `GATEWAY_TERMINAL_ID`                        | Terminal settlement.                               |
+| `GATEWAY_WEBHOOK_ID` + `GATEWAY_MERCHANT_ID` | Webhook test probe.                                |
+
+What the suite does:
+
+- processes sandbox test-card transactions (approval, decline, partial approval, verification,
+  authorize/capture, authorize/void, idempotency, search);
+- creates, reads, updates and deletes its own vault customers, addresses, payment methods,
+  add-ons, discounts, plans, subscriptions, invoices (including full and partial payments),
+  products (including CSV batch upload), carts and custom fields, all tagged with a unique run id;
+- uploads a one-row transaction batch and downloads the results once completed;
+- calls BIN lookup, amount calculation, settlement batch search and terminal listing.
+
+Endpoints that respond with HTTP 400/401/403/404 for account-level reasons (feature not enabled)
+are reported as skipped with the gateway's message, so a partially enabled sandbox still yields a
+clean run. Real failures (unexpected responses, 5xx, transport errors) fail the test.
+
+Without credentials the whole suite is skipped, so `npm run test:all` (unit + integration) is
+safe in any environment. In CI the integration job runs only when the `GATEWAY_API_KEY` and
+`GATEWAY_BASE_URL` repository secrets are configured.
+
 ## Unit testing your own code
 
 Inject a `fetch` mock through the `fetch` option so no network is involved:

@@ -377,10 +377,33 @@ build. Treat unknown response fields as additive.
 - Runnable scripts in [`examples/`](examples/)
 - Generate the API reference with `npm run docs:api` (output in `docs/api/`)
 
+## Running the tests
+
+Two suites ship with the SDK:
+
+| Command                    | What it does                                                                                     | Needs a key |
+| -------------------------- | ------------------------------------------------------------------------------------------------ | ----------- |
+| `npm test`                 | Unit tests. `fetch` is mocked, every request and response shape is asserted, 100% coverage gate. | No          |
+| `npm run test:integration` | Integration tests. Real requests against **your sandbox** for every resource.                    | Yes         |
+
+To run the integration suite, provide your sandbox credentials either as environment variables or
+in a git-ignored `.env` file (copy `.env.example`):
+
+```bash
+cp .env.example .env   # then edit GATEWAY_API_KEY and GATEWAY_BASE_URL
+npm run test:integration
+```
+
+The suite creates and then deletes its own customers, plans, subscriptions, invoices, products,
+carts and custom fields (all named with a unique run id), processes sandbox test-card
+transactions, and skips endpoints your account does not have enabled. Partner endpoints run only
+when `GATEWAY_PARTNER_API_KEY` is set. Without credentials every integration test is reported as
+skipped, so `npm run test:all` is safe to run anywhere. See [docs/testing.md](docs/testing.md).
+
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). The test suite enforces 100% line, branch, function and
-statement coverage.
+See [CONTRIBUTING.md](CONTRIBUTING.md). The unit test suite enforces 100% line, branch, function
+and statement coverage.
 
 ## License
 

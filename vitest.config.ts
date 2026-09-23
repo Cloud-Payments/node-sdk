@@ -1,8 +1,13 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
+/**
+ * Unit tests: fully mocked, no network, 100% coverage enforced.
+ * Integration tests live in test/integration and run with `npm run test:integration`.
+ */
 export default defineConfig({
   test: {
     include: ['test/**/*.test.ts'],
+    exclude: [...configDefaults.exclude, 'test/integration/**'],
     environment: 'node',
     restoreMocks: true,
     coverage: {

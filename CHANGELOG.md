@@ -22,3 +22,6 @@ All notable changes to this project are documented in this file. The format is b
   `computeWebhookSignature`) including secret rotation and test deliveries.
 - Full TypeScript types for every request and response.
 - ESM and CommonJS builds, 100% unit test coverage, documentation and examples.
+- Sandbox integration suite (`npm run test:integration`) that exercises every resource against a
+  real gateway when `GATEWAY_API_KEY` and `GATEWAY_BASE_URL` are configured, and is skipped
+  otherwise.
