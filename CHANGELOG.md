@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file. The format is b
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Development toolchain: vitest and `@vitest/coverage-v8` upgraded to 5.x (resolves
+  GHSA-82fw-gwwq-j7x9 in `@vitest/mocker`), `@types/node` to 22, and an npm override pins esbuild
+  to 0.28.1+ (resolves GHSA-g7r4-m6w7-qqqr). Running the test suite now requires Node 22.12+;
+  the published package still supports Node 18+, which CI verifies with a build-and-load check.
+
 ## [0.1.0] – 2026-09-23
 
 ### Added
