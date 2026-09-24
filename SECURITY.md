@@ -2,8 +2,10 @@
 
 ## Reporting a vulnerability
 
-Please report suspected vulnerabilities privately to the maintainers rather than opening a
-public issue. Include a description, reproduction steps and the affected version.
+Please do not open a public issue for security problems. Report them privately through
+[GitHub private vulnerability reporting](https://github.com/Cloud-Payments/node-sdk/security/advisories/new)
+(the **Report a vulnerability** button on the repository's Security tab). Include a description,
+reproduction steps and the affected version.
 
 ## Handling secrets
 
