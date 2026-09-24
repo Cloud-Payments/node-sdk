@@ -7,14 +7,14 @@ and webhook signature verification.
 
 - **Works with any white-labelled gateway host.** You pass your own `baseUrl`.
 - **API key authentication only.** Private (`api_…`) keys; public keys are rejected.
-- **Zero runtime dependencies.** Uses the global `fetch` available in Node 18+.
+- **Zero runtime dependencies.** Uses the global `fetch` available in Node 22+.
 - **TypeScript first.** Every request and response is typed, and field names match the gateway's
   JSON exactly so you can read the SDK and the gateway reference side by side.
 - **100% unit test coverage**, ESM and CommonJS builds.
 
 ## Requirements
 
-- Node.js 18 or newer.
+- Node.js 22 or newer.
 - A private API key and the base URL of your gateway environment.
 
 ## Installation

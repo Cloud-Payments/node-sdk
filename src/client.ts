@@ -156,7 +156,7 @@ function resolveOptions(
   const fetchImpl: FetchLike | undefined = options.fetch ?? globalThis.fetch;
   if (typeof fetchImpl !== 'function') {
     throw new ConfigurationError(
-      'A fetch implementation is required (Node 18+ provides one globally)',
+      'A fetch implementation is required (Node 22+ provides one globally)',
     );
   }
 

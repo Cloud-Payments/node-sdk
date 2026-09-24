@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Node ${{ matrix.node }}
@@ -12,23 +19,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [18, 20, 22]
+        node: [22, 24]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm run format:check
-      - run: npm run test:coverage
+      - run: npm run check
       - run: npm run build
-      - name: Smoke test built package (ESM and CJS)
+      - name: Smoke test built package
         run: |
-          node -e "import('./dist/index.js').then(m => { if (typeof m.GatewayClient !== 'function') throw new Error('ESM export missing'); console.log('ESM ok'); })"
-          node -e "const m = require('./dist/index.cjs'); if (typeof m.GatewayClient !== 'function') throw new Error('CJS export missing'); console.log('CJS ok');"
+          node -e "import('./dist/index.js').then(m => { if (typeof m.GatewayClient !== 'function') process.exit(1) })"
+          node -e "if (typeof require('./dist/index.cjs').GatewayClient !== 'function') process.exit(1)"
 
   integration:
     name: Sandbox integration tests
@@ -38,12 +42,11 @@ jobs:
       GATEWAY_API_KEY: ${{ secrets.GATEWAY_API_KEY }}
       GATEWAY_BASE_URL: ${{ secrets.GATEWAY_BASE_URL }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - name: Run against the sandbox (skipped when the GATEWAY_API_KEY secret is not set)
+      - run: npm run test:integration
         if: env.GATEWAY_API_KEY != ''
-        run: npm run test:integration

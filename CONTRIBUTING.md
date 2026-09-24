@@ -8,7 +8,7 @@ npm run check   # typecheck + lint + format check + tests with coverage
 npm run build   # ESM + CJS + type declarations in dist/
 ```
 
-Node 18 or newer is required. `.nvmrc` pins the version used in CI.
+Node 22 or newer is required. `.nvmrc` pins the version used in CI.
 
 ## Scripts
 

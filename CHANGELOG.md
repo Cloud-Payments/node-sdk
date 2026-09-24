@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file. The format is b
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] – 2026-09-24
+
+### Changed
+
+- Node.js 22 or newer is now required; Node 18 and 20 are end-of-life.
+
 ## [0.1.0] – 2026-09-23
 
 ### Added
