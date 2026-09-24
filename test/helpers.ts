@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi, type Mock } from 'vitest';
 import { GatewayClient, type GatewayClientOptions } from '../src/index.js';
 import type { FetchLike } from '../src/http.js';
 
@@ -38,10 +38,16 @@ export function textResponse(
   });
 }
 
+/** A recording fetch mock plus the calls it received. */
+export interface MockFetch {
+  fetch: FetchLike & Mock<FetchLike>;
+  calls: RecordedCall[];
+}
+
 /** Build a fetch mock that returns the given responses in order and records every call. */
 export function mockFetch(
   responses: Array<Response | Error | (() => Response | Promise<Response>)> = [],
-) {
+): MockFetch {
   const calls: RecordedCall[] = [];
   const queue = [...responses];
   const fetch = vi.fn(async (url: string, init: RequestInit) => {
@@ -57,7 +63,7 @@ export function mockFetch(
     if (next instanceof Error) throw next;
     if (typeof next === 'function') return next();
     return next;
-  }) as unknown as FetchLike & ReturnType<typeof vi.fn>;
+  }) as unknown as FetchLike & Mock<FetchLike>;
   return { fetch, calls };
 }
 
@@ -67,7 +73,7 @@ export const API_KEY = 'api_test_key_123';
 export function createClient(
   responses: Array<Response | Error | (() => Response | Promise<Response>)> = [],
   overrides: Partial<GatewayClientOptions> = {},
-) {
+): MockFetch & { client: GatewayClient } {
   const { fetch, calls } = mockFetch(responses);
   const client = new GatewayClient({ apiKey: API_KEY, baseUrl: BASE_URL, fetch, ...overrides });
   return { client, fetch, calls };

@@ -7,12 +7,13 @@ on:
 
 jobs:
   test:
-    name: Node ${{ matrix.node }}
+    # Full quality gate. The test runner (vitest 5) supports Node 22.12+ and 24+.
+    name: Test (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        node: [18, 20, 22]
+        node: [22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,6 +30,28 @@ jobs:
         run: |
           node -e "import('./dist/index.js').then(m => { if (typeof m.GatewayClient !== 'function') throw new Error('ESM export missing'); console.log('ESM ok'); })"
           node -e "const m = require('./dist/index.cjs'); if (typeof m.GatewayClient !== 'function') throw new Error('CJS export missing'); console.log('CJS ok');"
+
+  compat:
+    # The SDK itself supports Node 18+ (engines). These versions cannot run the test runner,
+    # so they verify that the package still builds and loads there.
+    name: Runtime compatibility (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 20]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Smoke test built package (ESM and CJS)
+        run: |
+          node -e "import('./dist/index.js').then(m => { const c = new m.GatewayClient({ apiKey: 'api_x', baseUrl: 'https://gateway.invalid' }); console.log('ESM ok', c.baseUrl); })"
+          node -e "const m = require('./dist/index.cjs'); const c = new m.GatewayClient({ apiKey: 'api_x', baseUrl: 'https://gateway.invalid' }); console.log('CJS ok', c.baseUrl);"
 
   integration:
     name: Sandbox integration tests

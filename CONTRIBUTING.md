@@ -8,7 +8,9 @@ npm run check   # typecheck + lint + format check + tests with coverage
 npm run build   # ESM + CJS + type declarations in dist/
 ```
 
-Node 18 or newer is required. `.nvmrc` pins the version used in CI.
+The SDK runs on Node 18 or newer, but the development toolchain (vitest 5) needs **Node 22.12 or
+newer**; `.nvmrc` pins the version used in CI. CI runs the full suite on Node 22 and 24 and a
+build-and-load compatibility check on Node 18 and 20.
 
 ## Scripts
 
