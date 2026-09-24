@@ -1,0 +1,85 @@
+{
+  "name": "@cloud-payments/node-sdk",
+  "version": "0.1.0",
+  "description": "Typed Node.js SDK for the payment gateway REST API: transactions, customer vault, recurring billing, invoices, webhooks and more.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist coverage docs/api",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "docs:api": "typedoc",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage",
+    "prepublishOnly": "npm run check && npm run build",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:all": "npm run test:coverage && npm run test:integration"
+  },
+  "keywords": [
+    "payments",
+    "payment-gateway",
+    "sdk",
+    "credit-card",
+    "ach",
+    "customer-vault",
+    "recurring-billing",
+    "invoices",
+    "webhooks",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cloud-Payments/node-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cloud-Payments/node-sdk/issues"
+  },
+  "homepage": "https://github.com/Cloud-Payments/node-sdk#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^18.19.130",
+    "@vitest/coverage-v8": "^3.2.7",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.9",
+    "tsup": "^8.5.1",
+    "typedoc": "^0.28.20",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^3.2.7"
+  }
+}
